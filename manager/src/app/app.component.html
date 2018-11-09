@@ -1,0 +1,6 @@
+<div>
+	<span routerLink="/">WaW</span>
+	<a *ngIf="a.curPage=='PageEdit'" routerLink="/"> PageList </a>
+	<a *ngIf="a.curPage=='PageList'" routerLink="/Page/NewPage"> NewPage </a>
+</div>
+<router-outlet></router-outlet>

@@ -1,6 +1,31 @@
 var Pages = require(__dirname+'/schema.js');
 module.exports = function(sd) {
-	var router = sd._initRouter('/api/pages');
+	var router = sd._initRouter('/waw/pages');
+
+	sd['ensure_get_pages'] = function(req, res, next) {
+		console.log(req.user);
+		next();
+	};
+	sd['query_get_pages'] = function(req, res) {
+		return {
+			author: req.user._id
+		};
+	};
+
+
+	sd['query_update_all_pages'] = function(req, res) {
+		return {
+			_id: req.body._id,
+			author: req.user._id
+		};
+	};
+	sd['query_unique_field_pages'] = function(req, res) {
+		return {
+			_id: req.body._id,
+			author: req.user._id
+		};
+	};
+
 	router.post("/file", function(req, res) {
 		Pages.findOne({
 			_id: req.body._id,
@@ -23,5 +48,13 @@ module.exports = function(sd) {
 	});
 	router.get("/default.png", function(req, res) {
 		res.sendFile(__dirname + '/files/avatar.png');
+	});
+	router.get('/', function(req, res){
+		if(req.user){
+			res.sendFile(__dirname+'/manager/dist/manager/index.html');
+		}
+		/*else{
+			res.redirect('/Recent/Blogs');
+		}*/
 	});
 };

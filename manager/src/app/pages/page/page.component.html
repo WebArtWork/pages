@@ -1,0 +1,25 @@
+
+  <!-- left -->
+  <div>
+
+    <input type="text" placeholder="url" [(ngModel)]="newPage.url" ><br>
+    <input type="text" placeholder="title" [(ngModel)]="newPage.title" ><br>
+    <input type="textarea" placeholder="description" [(ngModel)]="newPage.description"><br>
+	<input type="text" name="keywords" placeholder="keywords"><br>
+    <!-- <input type="image" name="image" placeholder="image"> -->
+
+  </div>
+  <!-- right -->
+  <div>
+    <!-- editor will be soon -->
+  </div>
+  <button (click)="a.create(newPage); newPage = {};">Create</button>
+
+<!-- 
+url
+title
+description
+keywords
+image
+text 
+-->

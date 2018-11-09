@@ -1,0 +1,7 @@
+<div *ngFor="let p of a.pages"> 
+	<span>
+		{{p.title}} {{p._id}} 
+	</span>  
+	<button (click)="a.open(p);">EDIT</button>
+	<button (click)="a.delete(p);">DELETE</button>
+</div>
