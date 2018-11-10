@@ -1,29 +1,30 @@
 var Pages = require(__dirname+'/schema.js');
 module.exports = function(sd) {
 	var router = sd._initRouter('/waw/pages');
+	var templates;
+	for (let i = sd._parts.length - 1; i >= 0; i--) {
+		if(sd._parts[i].name=='pages'||sd._parts[i].name=='Pages'){
+			console.log(sd._parts[i].info.templates);
+			templates = sd._parts[i].info.templetes;
+		}
+	}
+	router.get('/templetes', function(req, res){
+		res.json(templates);
+	});
+
 
 	sd['ensure_get_pages'] = function(req, res, next) {
 		console.log(req.user);
 		next();
 	};
 	sd['query_get_pages'] = function(req, res) {
-		return {
-			author: req.user._id
-		};
+		return {};
 	};
-
-
 	sd['query_update_all_pages'] = function(req, res) {
-		return {
-			_id: req.body._id,
-			author: req.user._id
-		};
+		return {};
 	};
 	sd['query_unique_field_pages'] = function(req, res) {
-		return {
-			_id: req.body._id,
-			author: req.user._id
-		};
+		return {};
 	};
 
 	router.post("/file", function(req, res) {
@@ -43,6 +44,7 @@ module.exports = function(sd) {
 			});
 		});
 	});
+
 	router.get("/file/:file", function(req, res) {
 		res.sendFile(__dirname + '/files/' + req.params.file);
 	});

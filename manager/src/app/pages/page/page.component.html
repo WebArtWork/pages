@@ -1,11 +1,14 @@
 
   <!-- left -->
   <div>
-
-    <input type="text" placeholder="url" [(ngModel)]="newPage.url" ><br>
-    <input type="text" placeholder="title" [(ngModel)]="newPage.title" ><br>
-    <input type="textarea" placeholder="description" [(ngModel)]="newPage.description"><br>
+  	<div *ngFor="let s of a.templates">
+  		{{s.name}}
+  	</div>
+    <input type="text" placeholder="url" [(ngModel)]="page.url" ><br>
+    <input type="text" placeholder="title" [(ngModel)]="page.title" ><br>
+    <textarea placeholder="description" [(ngModel)]="page.description"></textarea><br>
 	<input type="text" name="keywords" placeholder="keywords"><br>
+
     <!-- <input type="image" name="image" placeholder="image"> -->
 
   </div>
@@ -13,7 +16,7 @@
   <div>
     <!-- editor will be soon -->
   </div>
-  <button (click)="a.create(newPage); newPage = {};">Create</button>
+  <button >Save</button>
 
 <!-- 
 url

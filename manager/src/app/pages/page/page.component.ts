@@ -7,7 +7,7 @@ import { AppService } from '../../app.service';
 })
 export class PageComponent implements OnInit {
 
-	public newPage={};
+	public page={};
   constructor(public a: AppService) { 
   	a.curPage='PageEdit';
   }

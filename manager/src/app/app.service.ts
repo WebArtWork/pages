@@ -7,21 +7,21 @@ import { Router } from '@angular/router';
 })
 export class AppService {
 public pages;
+public templates;
 public curPage;
 	constructor(private http: HttpClient,
 		private mongo: MongoService,
 		private router: Router) { 
 		this.pages = mongo.get('pages');
+		http.get < any[] > ('/waw/pages/templetes').subscribe(resp => {
+			console.log(resp);
+			this.templates = resp;
+		})
 	}
-	create(page){
-		console.log(page);
-		if(!page.title||!page.description) return;
-		this.mongo.create('pages', {
-			title: page.title,
-			description: page.description
-		}, created=>{
+	create(){
+		this.mongo.create('pages', created=>{
 			console.log(created);
-			this.open(created._id);
+			this.open(created);
 		});
 	}
 	update(page){
@@ -34,7 +34,10 @@ public curPage;
 	}
 	
 	open(page){
-		return this.router.navigate(['/Page/' + page._id ]);
+		setTimeout(() => {
+			return this.router.navigate(['/Page/' + page._id ]);
+		}, 100);
+		
 	}
 
   /*
