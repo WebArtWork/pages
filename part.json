@@ -7,21 +7,33 @@
 	"config": "config.js",
 	"dependencies": {
 	},
-	"templates": [{
-		"name": "Default Template",
-		"file": "templates/default.html"
-	},{
-		"name": "Default Dark Template",
-		"file": "templates/dark.html"
-	}],
 	"crud": {
 		"updatesAll": [{
-			"keys": ["name","description"],
+			"keys": ["view","template","title","description","keywords","keywords_view","image","html", "htmls"],
 			"name": ""
 		}],
 		"unique_field": [{
 			"key": "url",
 			"name": ""
 		}]
-	}
+	},
+
+	"ignore_urls": ["/", "/group/*", "/groups"],
+	"templates": [{
+		"name": "Default Template",
+		"file": "default.html"
+	},{
+		"name": "Default Dark Template",
+		"file": "dark.html"
+	},{
+		"name": "Memo Wallet",
+		"file": "memo.html",
+		"features": [{
+			"field": "",
+			"html": ""
+		}]
+	},{
+		"name": "New Template",
+		"file": "new.html"
+	}]
 }

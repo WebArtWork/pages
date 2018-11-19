@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>LIST</title>
+	<link rel="stylesheet" href="https://raw.githack.com/WebArtWork/wcom/master/wcom-min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.css">
+	<link rel="stylesheet" href="/css/templates.css">
+	<link rel="stylesheet" href="/gen/public.css">
+</head>
+<body ng-controller="main">
+
+
+	<div style="background-color: black">
+		<a href="/">WaW</a>
+		<a href="/waw/pages"> All Pages </a>
+	</div>
+
+	<!-- left -->
+	<div>
+		<div ng-repeat="template in templates" ng-click="page.template=template.name; update(page);">{{template.name}}</div>
+		<input type="text" placeholder="url" ng-model="page.url" ng-change="setUrl(page);" ><br>
+		<input type="text" placeholder="title" ng-model="page.title" ng-change="update(page);" ><br>
+		<textarea placeholder="description" ng-model="page.description" ng-change="update(page);"></textarea><br>
+		<textarea placeholder="keywords" ng-keyup="print($event, keyword, this.value);"  ng-model="keyword" ng-change="update(page);"></textarea><br>
+		<div>{{page.keywords_view}}</div>
+		<label for="pageImage">
+			<img ng-src={{page.image}} height="200px">
+		</label>
+	</div>
+	<!-- right -->
+	<div ng-repeat="template in templates" ng-include="'/waw/pages/templates/'+template.file" ng-if="page.template==template.name"></div>
+
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
+	<script src="//raw.githack.com/WebArtWork/wcom/master/wcom-min.js"></script>
+
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.js"></script>
+	<script src="//rawcdn.githack.com/sachinchoolur/angular-trix/3eee4444e2b9b9505ae299d888c7e2363b1c9e3c/dist/angular-trix.min.js"></script>
+	
+	<script type="text/javascript" src="/waw/pages/cms/index.js"></script>
+
+	<script>
+		var app = angular.module('app', ['wcom', 'angularTrix']);
+		app.controller('main', function($scope, $http, mongo, file){
+			var _id = window.location.pathname.split('/');
+			$http.post('/waw/pages/templates', {
+				_id: _id[_id.length-1]
+			}).then(function(resp){
+				$scope.page=resp.data.page;
+				$scope.templates=resp.data.templates;
+				if(!$scope.page.template){
+					$scope.page.template = $scope.templates[0].name;
+				}
+			});
+			file.add({
+				id: 'pageImage',
+				width: 1920,
+				height: 1080
+			}, function(dataUrl) {
+				$scope.page.image = dataUrl;
+				$http.post('/api/user/file', {
+					dataUrl: dataUrl
+				}).then(function(resp) {
+					$scope.page.image = resp.data;
+					$scope.update($scope.page);
+				});
+			});
+			$scope.save_keywords = function(){
+				$scope.page.keywords_view="";
+				for(var i=0;i<$scope.page.keywords.length;i++){
+					if(i!=$scope.page.keywords.length-1) $scope.page.keywords_view+=$scope.page.keywords[i]+', ';
+					else $scope.page.keywords_view+=$scope.page.keywords[i];
+				}
+				$scope.update($scope.page);
+			}
+			$scope.print = function(event, keyword, el){
+				if(event.code=='Enter'){
+					if(keyword!='') $scope.page.keywords.push(keyword);	
+					$scope.save_keywords();
+					$scope.keyword=null;
+				}
+			}
+			$scope.update = function(page){
+				mongo.afterWhile(page, function(){
+					mongo.updateAll('pages', page);
+				});
+			}
+			$scope.setUrl = function(page){
+				if(!page.url) return;
+				if(page.url[0]!='/'){
+					page.url='/'+page.url;
+				}
+				mongo.afterWhile(page, function(){
+					$http.post('/api/pages/unique/field', page).then(function(resp){		
+						page.url=resp.data;
+					});
+				});
+			}
+		});
+	</script>
+</body>
+</html>

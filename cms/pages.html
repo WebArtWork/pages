@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>LIST</title>
+	<link rel="stylesheet" href="https://raw.githack.com/WebArtWork/wcom/master/wcom-min.css">
+</head>
+<body ng-controller="main">
+	
+	<div>
+		<a href="/">WaW</a>
+		<button ng-click="create()">NewPage</button>
+	</div>
+	<!-- sidebar with users -->
+	
+
+
+	{% if is.pagesuper %}
+	<div ng-init="super=true; init();">
+		Admins:
+		<div  ng-repeat="user in admins">
+			<input type="checkbox" ng-model="user.is.pagesuper" ng-change="updateUser(user);">
+			{{user.name}}
+			<button ng-if="!user.is.pagesuper" ng-click="user.is.pageadmin=false;  updateUser(user);">X</button>
+
+		</div>
+		All users:
+		<div  ng-repeat="user in users">
+			<button ng-if="!user.is.pageadmin" ng-click="user.is.pageadmin=true;  updateUser(user);">Add</button>
+			{{user.name}}
+		</div>
+	</div>
+	{% endif %}
+
+
+	<!-- end of sidebar -->
+	<div style="overflow-y: auto;" ng-repeat="page in pages"> 
+		<input type="checkbox" ng-model="page.view" ng-change="update(page);">
+		<a ng-href="/waw/pages/page/{{page._id}}" target="_self">{{page.title}}</a>
+		<button ng-click="delete(page);">DELETE</button>
+
+		<a ng-href="/waw/pages/page/{{page._id}}" target="_blank">EDIT</a>
+		<a ng-if="page.view" ng-href="{{page.url}}" target="_blank">OPEN</a>
+	</div>
+
+
+
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
+	<script type="text/javascript" src="https://raw.githack.com/WebArtWork/wcom/master/wcom-min.js"></script>
+
+	<script type="text/javascript">
+		var app = angular.module('app', ['wcom']);
+		app.controller('main', function($scope, $http, modal, mongo){
+			$scope.pages = mongo.get('pages');
+			$scope.init=function(){
+				$http.get('/waw/pages/get').then(function(resp){
+					$scope.users = resp.data.users;
+					$scope.admins = [];
+					for (var i = $scope.users.length - 1; i >= 0; i--) {
+						if($scope.users[i].is.pageadmin){
+							$scope.admins.push($scope.users[i]);
+						}
+					}
+				});
+			}
+
+			$scope.delete = function(page){
+				mongo.delete('pages', {
+					_id: page._id
+				});
+			}
+			$scope.create = function(){
+				mongo.create('pages', function(created){
+					window.location.href = "/waw/pages/page/"+created._id;
+				});
+			}
+			$scope.update = function(page){
+				mongo.afterWhile(page, function(){
+					mongo.updateAll('pages', page);
+				});
+			}
+			$scope.updateUser = function(user){
+				$http.post('/waw/pages/post', user).then(function(resp){
+					$scope.init();
+				});	
+			}
+		});
+	</script>
+
+	<script type="text/ng-template" id="modal.html">
+		<div>Are you sure?</div>
+		<button ng-click="yes()">Yes</button>
+		<button ng-click="close()">No</button>
+	</script>
+</body>
+</html>
