@@ -21,13 +21,16 @@
 	"ignore_urls": ["/", "/group/*", "/groups"],
 	"templates": [{
 		"name": "Default Template",
-		"file": "default.html"
+		"file": "default.html",
+		"app": ""
 	},{
 		"name": "Default Dark Template",
-		"file": "dark.html"
+		"file": "dark.html",
+		"app": ""
 	},{
 		"name": "Memo Wallet",
 		"file": "memo.html",
+		"app": "",
 		"features": [{
 			"field": "",
 			"html": ""
@@ -35,5 +38,11 @@
 	},{
 		"name": "New Template",
 		"file": "new.html"
+	}],
+	"features": [{
+		"name": "",
+		"app": "",
+		"field": "",
+		"html": ""
 	}]
 }
